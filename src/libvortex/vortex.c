@@ -21,6 +21,7 @@ vortex_init_ex(struct vortex *const vtx, const char *const address, const size_t
 	}
 
 	if (address != NULL && address[address_length] != '\0') {
+		fputs("not null terminated\n", stderr);
 		return VORTEX_ERR_INVAL;
 	}
 
