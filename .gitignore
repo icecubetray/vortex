@@ -1,0 +1,28 @@
+#
+#	Enable whitelisting mode.
+#
+
+# Ignore everything
+*
+
+# Except directories
+!*/
+
+
+
+
+#
+#	Whitelist
+#
+
+# Sources
+!*.c
+!*.h
+
+# Repository config
+!.gitignore
+!.gitattributes
+!.editorconfig
+
+# Documentation
+!*.md
