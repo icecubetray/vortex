@@ -7,7 +7,7 @@ LD = gcc
 
 PROFILE = drebug
 
-CFLAGS = -fPIC
+CFLAGS = -fPIC -Wall
 CFLAGS_DEBUG = -g -DDEBUG=1
 CFLAGS_RELEASE = -O3 -DRELEASE=1
 
