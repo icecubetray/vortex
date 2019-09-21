@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <errno.h>
 
 
 
@@ -48,6 +49,41 @@ vortex_deinit(struct vortex *const vtx) {
 	}
 
 	vtx->sfd = -1;
+	return VORTEX_SUCCESS;
+}
+
+
+
+
+unsigned int
+vortex_set_recv_timeout(const struct vortex *const vtx, const unsigned int timeout_ms) {
+	if (vtx == NULL) {
+		return VORTEX_ERR_NULL;
+	}
+
+	if (vtx->sfd < 0) {
+		return VORTEX_ERR_INVAL;
+	}
+
+
+	struct timeval timeout;
+	memset(&timeout, 0, sizeof(timeout));
+
+	unsigned int timeout_total = timeout_ms;
+
+	if (timeout_total > 1000) {
+		timeout.tv_sec = (timeout_total / 1000);
+		timeout_total -= (timeout.tv_sec * 1000);
+	}
+
+	timeout.tv_usec = (timeout_total * 1000);
+
+    if (setsockopt(vtx->sfd, SOL_SOCKET, SO_RCVTIMEO, (const void *)&timeout, sizeof(timeout)) != 0) {
+		perror("setsockopt()");
+		return VORTEX_ERR_CONN;
+	}
+
+
 	return VORTEX_SUCCESS;
 }
 
@@ -153,7 +189,11 @@ vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void
 	socklen_t sender_len = sizeof(sender);
 	ssize_t len = recvfrom(vtx->sfd, buffer, buffer_size, 0, &sender, &sender_len);
 	if (len < 1) {
-		return VORTEX_ERR_CONN;
+		if (errno == EAGAIN) {
+			return VORTEX_ERR_TIMEOUT;
+		} else {
+			return VORTEX_ERR_CONN;
+		}
 	}
 
 	if (length != NULL) {
@@ -169,8 +209,9 @@ vortex_recv_datagram(const struct vortex *const vtx, unsigned int *const format,
 	unsigned int len, fmt = vtx->format, off;
 	unsigned char buffer[512];
 
-	if (vortex_recv_raw(vtx, &len, buffer, sizeof(buffer)) != VORTEX_SUCCESS) {
-		return VORTEX_ERR_CONN;
+	unsigned int r;
+	if ((r = vortex_recv_raw(vtx, &len, buffer, sizeof(buffer))) != VORTEX_SUCCESS) {
+		return r;
 	}
 
 	if (fmt == VORTEX_FMT_AUTODETECT) {

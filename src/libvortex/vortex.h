@@ -17,6 +17,7 @@
 #define VORTEX_ERR_CONV			3
 #define VORTEX_ERR_ADDRINFO		4
 #define VORTEX_ERR_CONN			5
+#define VORTEX_ERR_TIMEOUT		6
 
 #define VORTEX_FMT_INVALID		~0U
 #define VORTEX_FMT_AUTODETECT	0
@@ -40,6 +41,8 @@ extern "C" {
 
 unsigned int vortex_init(struct vortex *const vtx, const unsigned int format);
 unsigned int vortex_deinit(struct vortex *const vtx);
+
+unsigned int vortex_set_recv_timeout(const struct vortex *const vtx, const unsigned int timeout_ms);
 
 unsigned int vortex_bind_ex(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port, const char *const svc);
 unsigned int vortex_bind(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port);

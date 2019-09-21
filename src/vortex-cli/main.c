@@ -32,10 +32,25 @@ main(int argc, char *argv[], char *env[]) {
 		puts("initialized");
 	}
 
+	if ((r = vortex_set_recv_timeout(&vtx, 5000)) != VORTEX_SUCCESS) {
+		fprintf(stderr, "failed to set timeout: %u\n", r);
+		return 1;
+	}
+
 	unsigned int fmt;
 	union fdo_datagram dg_test;
 	while (running) {
 		r = vortex_recv_datagram(&vtx, &fmt, &dg_test);
+
+		if (r == VORTEX_ERR_TIMEOUT) {
+			fputs("timed out waiting for data\n", stderr);
+			continue;
+		}
+
+		if (r != VORTEX_SUCCESS) {
+			perror("recvfrom()");
+			break;
+		}
 
 		puts("");
 		printf("format: %u\n", fmt);
