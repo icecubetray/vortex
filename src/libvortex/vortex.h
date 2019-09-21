@@ -6,6 +6,8 @@
 
 #include <stddef.h>
 
+#include "./datagram.h"
+
 
 
 
@@ -16,6 +18,8 @@
 #define VORTEX_ERR_ADDRINFO		4
 #define VORTEX_ERR_CONN			5
 
+#define VORTEX_FMT_INVALID		~0U
+#define VORTEX_FMT_AUTODETECT	0
 #define VORTEX_FMT_MOTORSPORT	1
 #define VORTEX_FMT_HORIZON		2
 
@@ -41,6 +45,7 @@ unsigned int vortex_bind_ex(struct vortex *const vtx, const char *const address,
 unsigned int vortex_bind(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port);
 
 unsigned int vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void *const buffer, const size_t buffer_size);
+unsigned int vortex_recv_datagram(const struct vortex *const vtx, unsigned int *const format, union fdo_datagram *const datagram);
 
 #ifdef __cplusplus
 }

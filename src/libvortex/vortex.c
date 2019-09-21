@@ -162,3 +162,51 @@ vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void
 
 	return VORTEX_SUCCESS;
 }
+
+
+unsigned int
+vortex_recv_datagram(const struct vortex *const vtx, unsigned int *const format, union fdo_datagram *const datagram) {
+	unsigned int len, fmt = vtx->format, off;
+	unsigned char buffer[512];
+
+	if (vortex_recv_raw(vtx, &len, buffer, sizeof(buffer)) != VORTEX_SUCCESS) {
+		return VORTEX_ERR_CONN;
+	}
+
+	if (fmt == VORTEX_FMT_AUTODETECT) {
+		switch (len) {
+			case sizeof(datagram->motorsport):
+				fmt = VORTEX_FMT_MOTORSPORT;
+				break;
+			case sizeof(datagram->horizon):
+				fmt = VORTEX_FMT_HORIZON;
+				break;
+			default:
+				fmt = VORTEX_FMT_INVALID;
+				break;
+		}
+	}
+
+	if (format != NULL) {
+		*format = fmt;
+	}
+
+	switch (fmt) {
+		case VORTEX_FMT_MOTORSPORT:
+			off = offsetof(union fdo_datagram, motorsport);
+			break;
+		case VORTEX_FMT_HORIZON:
+			off = offsetof(union fdo_datagram, horizon);
+			break;
+		default:
+			return VORTEX_FMT_INVALID;
+	}
+
+	memcpy(
+		&((char *)datagram)[off],
+		buffer,
+		len
+	);
+
+	return VORTEX_SUCCESS;
+}

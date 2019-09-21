@@ -23,7 +23,7 @@ main(int argc, char *argv[], char *env[]) {
 	struct vortex vtx;
 	unsigned int r;
 
-	vortex_init(&vtx, VORTEX_FMT_HORIZON);
+	vortex_init(&vtx, VORTEX_FMT_AUTODETECT);
 
 	if ((r = vortex_bind(&vtx, NULL, 0, 9999)) != VORTEX_SUCCESS) {
 		fprintf(stderr, "failed to init: %u\n", r);
@@ -32,19 +32,13 @@ main(int argc, char *argv[], char *env[]) {
 		puts("initialized");
 	}
 
-	unsigned int len = 0;
-	unsigned char buffer[4096];
+	unsigned int fmt;
+	union fdo_datagram dg_test;
 	while (running) {
-		r = vortex_recv_raw(&vtx, &len, buffer, sizeof(buffer));
-		if (r > 0) {
-			printf("recv failed: %u\n", r);
-		} else {
-			//printf("r=%u recv=%u/%u\n", r, len, sizeof(struct fdo_datagram));
-		}
+		r = vortex_recv_datagram(&vtx, &fmt, &dg_test);
 
-		union fdo_datagram dg_test;
-		memcpy(&dg_test.horizon, buffer, sizeof(dg_test.horizon));
 		puts("");
+		printf("format: %u\n", fmt);
 		printf("isRaceOn: %i\n", dg_test.horizon.v1.isRaceOn);
 		printf("timestampMs: %u\n", dg_test.horizon.v1.timestampMs);
 		printf("engineRpm (max/idle/current): %f/%f/%f\n", dg_test.horizon.v1.engineMaxRpm, dg_test.horizon.v1.engineIdleRpm, dg_test.horizon.v1.engineCurrentRpm);
@@ -61,7 +55,6 @@ main(int argc, char *argv[], char *env[]) {
 		printf("steer: %u\n", dg_test.horizon.v2.steer);
 		printf("drivingLine: %u\n", dg_test.horizon.v2.drivingLine);
 		printf("aiBrakeDiff: %u\n", dg_test.horizon.v2.aiBrakeDifference);
-		printf("sizeof: %u/%lu\n", len, sizeof(dg_test));
 	}
 
 	puts("deinitializing...");
