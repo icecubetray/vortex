@@ -2,6 +2,7 @@
 #include <signal.h>
 
 #include <libvortex/vortex.h>
+#include <libvortex/datagram.h>
 
 
 
@@ -33,7 +34,7 @@ main(int argc, char *argv[], char *env[]) {
 		if (r > 0) {
 			printf("recv failed: %u\n", r);
 		} else {
-			printf("r=%u recv=%u\n", r, len);
+			printf("r=%u recv=%u/%u\n", r, len, sizeof(struct fdo_datagram));
 		}
 	}
 
