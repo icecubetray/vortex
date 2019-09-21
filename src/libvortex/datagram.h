@@ -30,6 +30,10 @@ struct fdo_datagram {
 	fdo_f32_t velocityY;
 	fdo_f32_t velocityZ;
 
+	fdo_f32_t angularVelocityX;
+	fdo_f32_t angularVelocityY;
+	fdo_f32_t angularVelocityZ;
+
 	fdo_f32_t yaw;
 	fdo_f32_t pitch;
 	fdo_f32_t roll;
