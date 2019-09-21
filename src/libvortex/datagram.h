@@ -10,9 +10,10 @@
 
 
 /*
-** Datagram structure as sent by FDO.
-** Currently v2.
+** Datagram structure parts as sent by Forza.
 */
+
+
 struct fdo_datapart_v1 {
 	fdo_s32_t isRaceOn;
 
@@ -90,8 +91,8 @@ struct fdo_datapart_v1 {
 	fdo_s32_t carNumCylinders;
 };
 
+
 struct fdo_datapart_v2 {
-	/* Members added in v2. */
 	fdo_f32_t positionX;
 	fdo_f32_t positionY;
 	fdo_f32_t positionZ;
@@ -127,6 +128,10 @@ struct fdo_datapart_v2 {
 };
 
 
+
+
+/* Unified datagram type. */
+
 union fdo_datagram {
 	struct {
 		struct fdo_datapart_v1 v1;
@@ -134,7 +139,7 @@ union fdo_datagram {
 	} motorsport;
 	struct {
 		struct fdo_datapart_v1 v1;
-		char padding[12];
+		char padding[12]; /* YTBD. */
 		struct fdo_datapart_v2 v2;
 	} horizon;
 };
