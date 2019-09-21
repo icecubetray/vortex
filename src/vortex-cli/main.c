@@ -17,6 +17,8 @@ void sighandler(const int sig) {
 
 int
 main(int argc, char *argv[], char *env[]) {
+	signal(SIGINT, sighandler);
+
 	struct vortex vtx;
 	unsigned int r;
 
