@@ -19,6 +19,9 @@
 !*.c
 !*.h
 
+# Build
+!Makefile
+
 # Repository config
 !.gitignore
 !.gitattributes
