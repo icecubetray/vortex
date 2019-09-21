@@ -68,8 +68,7 @@ main(int argc, char *argv[], char *env[]) {
 		printf("distance: %f\n", dg_test.horizon.v2.distanceTraveled);
 		printf("brake (foot,hand): %u/%u\n", dg_test.horizon.v2.brake, dg_test.horizon.v2.handBrake);
 		printf("steer: %u\n", dg_test.horizon.v2.steer);
-		printf("drivingLine: %u\n", dg_test.horizon.v2.drivingLine);
-		printf("aiBrakeDiff: %u\n", dg_test.horizon.v2.aiBrakeDifference);
+		printf("clutch: %u\n", dg_test.horizon.v2.clutch);
 	}
 
 	puts("deinitializing...");
