@@ -34,7 +34,7 @@ LFLAGS_PROFILE = $(LFLAGS_$(PROFILE_SANE))
 
 
 
-.PHONY: all libvortex vortex-cli mostlyclean clean
+.PHONY: all libvortex vortex-cli mostlyclean clean rebuild
 
 all: libvortex vortex-cli
 
@@ -51,6 +51,9 @@ mostlyclean:
 
 clean: mostlyclean
 	rm -rf $(OUT_DIR)
+
+
+rebuild: clean all
 
 
 
