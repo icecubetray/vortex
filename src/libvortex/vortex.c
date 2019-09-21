@@ -111,3 +111,29 @@ vortex_deinit(struct vortex *const vtx) {
 	vtx->sfd = -1;
 	return VORTEX_SUCCESS;
 }
+
+
+
+
+unsigned int vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void *const buffer, const size_t buffer_size) {
+	if (vtx == NULL) {
+		return VORTEX_ERR_NULL;
+	}
+
+	if (vtx->sfd < 0) {
+		return VORTEX_ERR_INVAL;
+	}
+
+	struct sockaddr sender;
+	socklen_t sender_len = sizeof(sender);
+	ssize_t len = recvfrom(vtx->sfd, buffer, buffer_size, 0, &sender, &sender_len);
+	if (len < 1) {
+		return VORTEX_ERR_CONN;
+	}
+
+	if (length != NULL) {
+		*length = len;
+	}
+
+	return VORTEX_SUCCESS;
+}
