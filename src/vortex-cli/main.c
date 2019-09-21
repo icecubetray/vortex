@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
+#include <string.h>
 
 #include <libvortex/vortex.h>
 #include <libvortex/datagram.h>
@@ -36,8 +37,29 @@ main(int argc, char *argv[], char *env[]) {
 		if (r > 0) {
 			printf("recv failed: %u\n", r);
 		} else {
-			printf("r=%u recv=%u/%u\n", r, len, sizeof(struct fdo_datagram));
+			//printf("r=%u recv=%u/%u\n", r, len, sizeof(struct fdo_datagram));
 		}
+
+		union fdo_datagram dg_test;
+		memcpy(&dg_test.horizon, buffer, sizeof(dg_test.horizon));
+		puts("");
+		printf("isRaceOn: %i\n", dg_test.horizon.v1.isRaceOn);
+		printf("timestampMs: %u\n", dg_test.horizon.v1.timestampMs);
+		printf("engineRpm (max/idle/current): %f/%f/%f\n", dg_test.horizon.v1.engineMaxRpm, dg_test.horizon.v1.engineIdleRpm, dg_test.horizon.v1.engineCurrentRpm);
+		printf("accel (x,y,z): %f,%f,%f\n", dg_test.horizon.v1.accelerationX, dg_test.horizon.v1.accelerationY, dg_test.horizon.v1.accelerationZ);
+		printf("velocity (x,y,z): %f,%f,%f\n", dg_test.horizon.v1.velocityX, dg_test.horizon.v1.velocityY, dg_test.horizon.v1.velocityZ);
+		printf("ang. velocity (x,y,z): %f,%f,%f\n", dg_test.horizon.v1.angularVelocityX, dg_test.horizon.v1.angularVelocityY, dg_test.horizon.v1.angularVelocityZ);
+		printf("yaw/pitch/roll: %f/%f/%f\n", dg_test.horizon.v1.yaw, dg_test.horizon.v1.pitch, dg_test.horizon.v1.roll);
+		printf("susp compr. (fl/fr/rl/rr): %f/%f/%f/%f\n", dg_test.horizon.v1.suspensionCompressionFrontLeft, dg_test.horizon.v1.suspensionCompressionFrontRight, dg_test.horizon.v1.suspensionCompressionRearLeft, dg_test.horizon.v1.suspensionCompressionRearRight);
+		printf("pos (x,y,z): %f,%f,%f\n", dg_test.horizon.v2.positionX, dg_test.horizon.v2.positionY, dg_test.horizon.v2.positionZ);
+		printf("speed: %f m/s (%f km/h)\n", dg_test.horizon.v2.speed, 0.0f);
+		printf("fuel: %f\n", dg_test.horizon.v2.fuel);
+		printf("distance: %f\n", dg_test.horizon.v2.distanceTraveled);
+		printf("brake (foot,hand): %u/%u\n", dg_test.horizon.v2.brake, dg_test.horizon.v2.handBrake);
+		printf("steer: %u\n", dg_test.horizon.v2.steer);
+		printf("drivingLine: %u\n", dg_test.horizon.v2.drivingLine);
+		printf("aiBrakeDiff: %u\n", dg_test.horizon.v2.aiBrakeDifference);
+		printf("sizeof: %u/%lu\n", len, sizeof(dg_test));
 	}
 
 	puts("deinitializing...");
