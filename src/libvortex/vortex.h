@@ -38,7 +38,7 @@ struct vortex {
 extern "C" {
 #endif
 
-unsigned int vortex_init(struct vortex *const vtx, unsigned int format);
+unsigned int vortex_init(struct vortex *const vtx, const unsigned int format);
 unsigned int vortex_deinit(struct vortex *const vtx);
 
 unsigned int vortex_bind_ex(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port, const char *const svc);

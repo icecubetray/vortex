@@ -13,7 +13,7 @@
 
 
 unsigned int
-vortex_init(struct vortex *const vtx, unsigned int format) {
+vortex_init(struct vortex *const vtx, const unsigned int format) {
 	/* Sanity checks. */
 
 	if (vtx == NULL) {
