@@ -13,7 +13,49 @@
 
 
 unsigned int
-vortex_init_ex(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port, const char *const svc) {
+vortex_init(struct vortex *const vtx, unsigned int format) {
+	/* Sanity checks. */
+
+	if (vtx == NULL) {
+		return VORTEX_ERR_NULL;
+	}
+
+
+	/* Zero out the struct. */
+	memset(vtx, 0, sizeof(*vtx));
+
+	/* Specify format. */
+	vtx->format = format;
+
+
+	return VORTEX_SUCCESS;
+}
+
+
+unsigned int
+vortex_deinit(struct vortex *const vtx) {
+	if (vtx == NULL) {
+		return VORTEX_ERR_NULL;
+	}
+
+	if (vtx->sfd < 0) {
+		return VORTEX_ERR_INVAL;
+	}
+
+	if (close(vtx->sfd) != 0) {
+		perror("close()");
+		return VORTEX_ERR_CONN;
+	}
+
+	vtx->sfd = -1;
+	return VORTEX_SUCCESS;
+}
+
+
+
+
+unsigned int
+vortex_bind_ex(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port, const char *const svc) {
 	/* Sanity checks. */
 
 	if (vtx == NULL) {
@@ -25,8 +67,6 @@ vortex_init_ex(struct vortex *const vtx, const char *const address, const size_t
 		return VORTEX_ERR_INVAL;
 	}
 
-
-	memset(vtx, 0, sizeof(*vtx));
 
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof(hints));
@@ -73,6 +113,7 @@ vortex_init_ex(struct vortex *const vtx, const char *const address, const size_t
 
 		break;
 	}
+
 	freeaddrinfo(ai_root);
 
 	if (ai_ptr == NULL) {
@@ -80,13 +121,15 @@ vortex_init_ex(struct vortex *const vtx, const char *const address, const size_t
 	}
 
 	vtx->sfd = sfd;
+
+
 	return VORTEX_SUCCESS;
 }
 
 
 unsigned int
-vortex_init(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port) {
-	return vortex_init_ex(
+vortex_bind(struct vortex *const vtx, const char *const address, const size_t address_length, const unsigned short int port) {
+	return vortex_bind_ex(
 		vtx,
 		address, address_length,
 		port, NULL
@@ -94,29 +137,10 @@ vortex_init(struct vortex *const vtx, const char *const address, const size_t ad
 }
 
 
+
+
 unsigned int
-vortex_deinit(struct vortex *const vtx) {
-	if (vtx == NULL) {
-		return VORTEX_ERR_NULL;
-	}
-
-	if (vtx->sfd < 0) {
-		return VORTEX_ERR_INVAL;
-	}
-
-	if (close(vtx->sfd) != 0) {
-		perror("close()");
-		return VORTEX_ERR_CONN;
-	}
-
-	vtx->sfd = -1;
-	return VORTEX_SUCCESS;
-}
-
-
-
-
-unsigned int vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void *const buffer, const size_t buffer_size) {
+vortex_recv_raw(const struct vortex *const vtx, unsigned int *const length, void *const buffer, const size_t buffer_size) {
 	if (vtx == NULL) {
 		return VORTEX_ERR_NULL;
 	}

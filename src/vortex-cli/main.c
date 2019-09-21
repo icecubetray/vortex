@@ -23,7 +23,9 @@ main(int argc, char *argv[], char *env[]) {
 	struct vortex vtx;
 	unsigned int r;
 
-	if ((r = vortex_init(&vtx, NULL, sizeof(addr) - 1, 9999)) != VORTEX_SUCCESS) {
+	vortex_init(&vtx, VORTEX_FMT_HORIZON);
+
+	if ((r = vortex_bind(&vtx, NULL, 0, 9999)) != VORTEX_SUCCESS) {
 		fprintf(stderr, "failed to init: %u\n", r);
 		return 1;
 	} else {
