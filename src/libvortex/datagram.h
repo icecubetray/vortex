@@ -13,7 +13,7 @@
 ** Datagram structure as sent by FDO.
 ** Currently v2.
 */
-struct fdo_datagram {
+struct fdo_datapart_v1 {
 	fdo_s32_t isRaceOn;
 
 	fdo_u32_t timestampMs;
@@ -88,7 +88,9 @@ struct fdo_datagram {
 	fdo_s32_t carPerformanceIndex;
 	fdo_s32_t carDrivetrainType;
 	fdo_s32_t carNumCylinders;
+};
 
+struct fdo_datapart_v2 {
 	/* Members added in v2. */
 	fdo_f32_t positionX;
 	fdo_f32_t positionY;
@@ -122,6 +124,19 @@ struct fdo_datagram {
 
 	fdo_u8_t drivingLine;
 	fdo_u8_t aiBrakeDifference;
+};
+
+
+union fdo_datagram {
+	struct {
+		struct fdo_datapart_v1 v1;
+		struct fdo_datapart_v2 v2;
+	} motorsport;
+	struct {
+		struct fdo_datapart_v1 v1;
+		char padding[12];
+		struct fdo_datapart_v2 v2;
+	} horizon;
 };
 
 
