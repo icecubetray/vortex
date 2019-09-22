@@ -240,7 +240,7 @@ vortex_recv_datagram(const struct vortex *const vtx, unsigned int *const format,
 			off = offsetof(union fdo_datagram, horizon);
 			break;
 		default:
-			return VORTEX_FMT_INVALID;
+			return VORTEX_ERR_INVAL;
 	}
 
 	memcpy(
