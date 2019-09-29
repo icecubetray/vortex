@@ -14,6 +14,8 @@ CFLAGS_RELEASE = -O3 -DRELEASE=1
 OBJS =
 OUT_DIR = bin
 
+VORTEX_QT_MAKEFILE = app.mk
+
 
 
 
@@ -36,10 +38,11 @@ LFLAGS_PROFILE = $(LFLAGS_$(PROFILE_SANE))
 
 .PHONY: all libvortex vortex-cli mostlyclean clean rebuild
 
-all: libvortex vortex-cli
+all: libvortex vortex-cli vortex-qt
 
 libvortex: $(OUT_DIR)/libvortex.so
 vortex-cli: $(OUT_DIR)/vortex-cli
+vortex-qt: $(OUT_DIR)/vortex-qt
 
 
 
@@ -47,6 +50,9 @@ vortex-cli: $(OUT_DIR)/vortex-cli
 mostlyclean: OBJS = $(call GetObjFiles,src)
 mostlyclean:
 	rm -f $(OBJS);
+	if [ -f src/vortex-qt/$(VORTEX_QT_MAKEFILE) ]; then $(MAKE) -C src/vortex-qt -f $(VORTEX_QT_MAKEFILE) clean; fi
+	rm -f src/vortex-qt/$(VORTEX_QT_MAKEFILE)
+	rm -f src/vortex-qt/app.out
 
 
 clean: mostlyclean
@@ -82,3 +88,10 @@ $(OUT_DIR)/vortex-cli: $(call GetObjFiles,src/vortex-cli)
 ifeq (release,$(PROFILE))
 	strip --strip-unneeded $@
 endif
+
+
+$(OUT_DIR)/vortex-qt:
+	@mkdir -p $(dir $@)
+	qmake -makefile -o src/vortex-qt/$(VORTEX_QT_MAKEFILE) src/vortex-qt/vortex-qt.pro
+	$(MAKE) -C src/vortex-qt -f $(VORTEX_QT_MAKEFILE) TARGET=app.out
+	cp src/vortex-qt/app.out $@

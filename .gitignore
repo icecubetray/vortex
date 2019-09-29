@@ -18,9 +18,13 @@
 # Sources
 !*.c
 !*.h
+!*.cpp
+!*.hpp
+!*.ui
 
 # Build
 !Makefile
+!*.pro
 
 # Repository config
 !.gitignore
